@@ -2,7 +2,7 @@
 	"name": "format-indent",
 	"displayName": "PHP Code Format",
 	"description": "Code format for PHP Language",
-	"version": "1.1.2",
+	"version": "1.2.0",
 	"publisher": "Kasik96",
 	"engines": {
 		"vscode": "^0.10.1"
