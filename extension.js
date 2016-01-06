@@ -11,13 +11,16 @@ function format(document, range, options) {
     var result = [];
     var content = document.getText(range);
 
+    var config = vscode.workspace.getConfiguration("editor");
+    var tabSize = config.get("tabSize", "auto");
+
     var fieldPHP = new Array();
     var stringHTML = content;
 
     var nextNumber = -1;
 
     if (stringHTML.indexOf("<?php") > -1 && stringHTML.indexOf("?>") == -1) {
-        stringHTML = PHPFormat(stringHTML);
+        stringHTML = PHPFormat(stringHTML, tabSize);
     } else {
         while (stringHTML.indexOf("<?php") != -1) {
             nextNumber++;
@@ -28,10 +31,10 @@ function format(document, range, options) {
             stringHTML = stringHTML.replace(find, "<!--Replace" + nextNumber + "-->");
         }
 
-        stringHTML = beautify(stringHTML, { indent_size: 2 });
+        stringHTML = beautify(stringHTML, { indent_size: tabSize });
 
         for (var index = 0; index < fieldPHP.length; index++) {
-            stringHTML = stringHTML.replace("<!--Replace" + index + "-->", PHPFormat(fieldPHP[index]));
+            stringHTML = stringHTML.replace("<!--Replace" + index + "-->", PHPFormat(fieldPHP[index], tabSize));
         }
     }
 
@@ -42,10 +45,10 @@ function format(document, range, options) {
     return result;
 }
 
-function PHPFormat(vst) {
+function PHPFormat(vst, tabSize) {
     var change1 = vst.replace("<?php", "//firstCH\n");
     var change2 = change1.replace("?>", "//secondCH\n");
-    var clear1 = beautifier.js_beautify(change2, { indent_size: 2 });
+    var clear1 = beautifier.js_beautify(change2, { indent_size: tabSize });
     var clear2 = clear1.replace("//firstCH", "<?php");
     var clear3 = clear2.replace("//secondCH", "?>");
     var clear4 = clear3.split('- >').join('->');
