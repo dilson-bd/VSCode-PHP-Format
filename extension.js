@@ -16,28 +16,23 @@ function format(document, range, options) {
 
     var nextNumber = -1;
 
-    while (stringHTML.indexOf("<?php") != -1) {
-        nextNumber++;
-        var firstBracket = stringHTML.indexOf("<?php");
-        var secondBracket = stringHTML.indexOf("?>");
-        fieldPHP.push(stringHTML.substring(firstBracket, secondBracket + 2));
-        var find = stringHTML.substring(firstBracket, secondBracket + 2);
-        stringHTML = stringHTML.replace(find, "<!--Replace" + nextNumber + "-->");
-    }
+    if (stringHTML.indexOf("<?php") > -1 && stringHTML.indexOf("?>") == -1) {
+        stringHTML = PHPFormat(stringHTML);
+    } else {
+        while (stringHTML.indexOf("<?php") != -1) {
+            nextNumber++;
+            var firstBracket = stringHTML.indexOf("<?php");
+            var secondBracket = stringHTML.indexOf("?>");
+            fieldPHP.push(stringHTML.substring(firstBracket, secondBracket + 2));
+            var find = stringHTML.substring(firstBracket, secondBracket + 2);
+            stringHTML = stringHTML.replace(find, "<!--Replace" + nextNumber + "-->");
+        }
 
-    stringHTML = beautify(stringHTML, { indent_size: 2 });
+        stringHTML = beautify(stringHTML, { indent_size: 2 });
 
-    for (var index = 0; index < fieldPHP.length; index++) {
-        var change1 = fieldPHP[index].replace("<?php", "//firstCH\n");
-        var change2 = change1.replace("?>", "//secondCH\n");
-        var clear1 = beautifier.js_beautify(change2, { indent_size: 2 });
-        var clear2 = clear1.replace("//firstCH", "<?php");
-        var clear3 = clear2.replace("//secondCH", "?>");
-        var clear4 = clear3.split('- >').join('->');
-        var clear5 = clear4.split('= >').join('=>');
-        var clear6 = clear5.split('. =').join(' .=');
-        var clear = clear6.replace("\n", " ");
-        stringHTML = stringHTML.replace("<!--Replace" + index + "-->", clear);
+        for (var index = 0; index < fieldPHP.length; index++) {
+            stringHTML = stringHTML.replace("<!--Replace" + index + "-->", PHPFormat(fieldPHP[index]));
+        }
     }
 
     if (stringHTML) {
@@ -45,6 +40,19 @@ function format(document, range, options) {
     }
 
     return result;
+}
+
+function PHPFormat(vst) {
+    var change1 = vst.replace("<?php", "//firstCH\n");
+    var change2 = change1.replace("?>", "//secondCH\n");
+    var clear1 = beautifier.js_beautify(change2, { indent_size: 2 });
+    var clear2 = clear1.replace("//firstCH", "<?php");
+    var clear3 = clear2.replace("//secondCH", "?>");
+    var clear4 = clear3.split('- >').join('->');
+    var clear5 = clear4.split('= >').join('=>');
+    var clear6 = clear5.split('. =').join(' .=');
+    var clear = clear6.replace("\n", " ");
+    return clear;
 }
 
 function activate(context) {
