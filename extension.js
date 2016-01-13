@@ -28,13 +28,13 @@ function format(document, range, options) {
       var secondBracket = stringHTML.indexOf("?>");
       fieldPHP.push(stringHTML.substring(firstBracket, secondBracket + 2));
       var find = stringHTML.substring(firstBracket, secondBracket + 2);
-      stringHTML = stringHTML.replace(find, "<!--Replace" + nextNumber + "-->");
+      stringHTML = stringHTML.replace(find, "//Replace" + nextNumber);
     }
 
     stringHTML = beautify(stringHTML, { indent_size: tabSize });
 
     for (var index = 0; index < fieldPHP.length; index++) {
-      stringHTML = stringHTML.replace("<!--Replace" + index + "-->", PHPFormat(fieldPHP[index], tabSize));
+      stringHTML = stringHTML.replace("//Replace" + index, PHPFormat(fieldPHP[index], tabSize));
     }
   }
 
