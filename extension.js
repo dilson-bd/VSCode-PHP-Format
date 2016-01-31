@@ -15,7 +15,7 @@ function format(document, range, options) {
   var tabSize = config.get("tabSize", "auto");
 
   var fieldPHP = new Array();
-  var stringHTML = content;
+  var stringHTML = content.split('<?PHP').join('<?php');
 
   var nextNumber = -1;
 
@@ -46,21 +46,20 @@ function format(document, range, options) {
 }
 
 function PHPFormat(vst, tabSize) {
-  var change1 = vst.replace("<?php", "//firstCH\n");
-  var change2 = change1.replace("?>", "//secondCH\n");
-  var change3 = change2.replace('["', 'startOfNamedIndex');
-  var change4 = change3.replace('"]', "endOfNamedIndex");
-  var clear1 = beautifier.js_beautify(change4, { indent_size: tabSize });
-  var clear2 = clear1.replace("//firstCH", "<?php");
-  var clear3 = clear2.replace("//secondCH", "?>");
-  var clear4 = clear3.replace("startOfNamedIndex", '["');
-  var clear5 = clear4.replace("endOfNamedIndex", '"]');
-  var clear6 = clear5.split(' - > ').join('->');
-  var clear7 = clear6.split('= >').join('=>');
-  var clear8 = clear7.split('. =').join(' .=');
-  var clear9 = clear8.split('< >').join('<>');
-  var clear10 = clear9.split('- >').join('->');
-  var clear = clear10.replace("\n", " ");
+  var change = vst.replace("<?php", "//firstCH\n");
+  var change = change.replace("?>", "//secondCH\n");
+  var clear = beautifier.js_beautify(change, { indent_size: tabSize });
+  var clear = clear.replace("//firstCH", "<?php");
+  var clear = clear.replace("//secondCH", "?>");
+  var clear = clear.replace(/\[\"\s*(\S?)/g, '["$1');
+  var clear = clear.replace(/\s*\"\]/g, '"]');
+  var clear = clear.replace(/(public|protected|private)\s*(\S?)/g, "$1 $2");
+  var clear = clear.split(' - > ').join('->');
+  var clear = clear.split('= >').join('=>');
+  var clear = clear.split('. =').join(' .=');
+  var clear = clear.split('< >').join('<>');
+  var clear = clear.split('- >').join('->');
+  var clear = clear.replace("\n", " ");
   return clear;
 }
 
