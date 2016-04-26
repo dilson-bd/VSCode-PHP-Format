@@ -2,7 +2,7 @@
 	"name": "format-indent",
 	"displayName": "PHP Code Format",
 	"description": "Code format for PHP Language",
-	"version": "1.2.3",
+	"version": "1.3.0",
 	"publisher": "Kasik96",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -28,10 +28,6 @@
 		"onLanguage:php"
 	],
 	"main": "./extension",
-	"dependencies": {
-		"js-beautify": "^1.5.10",
-        "beautifier": "0.1.7"
-	},
 	"devDependencies": {
 		"vscode": "0.10.x"
 	}
